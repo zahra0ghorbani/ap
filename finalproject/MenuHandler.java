@@ -19,10 +19,11 @@ public class MenuHandler {
             System.out.println("1. Student Registration");
             System.out.println("2. Student Login");
             System.out.println("3. View Registered Student Count");
-            System.out.println("4. Exit");
+            System.out.println("4. Search Book");
+            System.out.println("5. Exit");
             System.out.print("Please enter your choice: ");
 
-            int choice = getIntInput(1, 4);
+            int choice = getIntInput(1, 5);
 
             switch (choice) {
                 case 1:
@@ -35,8 +36,13 @@ public class MenuHandler {
                     displayStudentCount();
                     break;
                 case 4:
+                    handleBookSearch();
+                    break;
+                case 5:
                     System.out.println("Exiting system. Goodbye!");
                     return;
+                default:
+                    System.out.println("Invalid option! Please try again.");
             }
             System.out.println("___________________________");
         }
@@ -118,8 +124,28 @@ public class MenuHandler {
                     currentUser = null;
                     System.out.println("Logged out successfully.");
                     return;
+                default:
+                    System.out.println("Invalid option! Please try again.");
             }
         }
+    }
+
+    private void handleBookSearch() {
+        System.out.println("\n--- Search Book ---");
+        System.out.print("Enter title (or leave empty): ");
+        String title = scanner.nextLine();
+
+        System.out.print("Enter author (or leave empty): ");
+        String author = scanner.nextLine();
+
+        System.out.print("Enter year (or 0 to skip): ");
+        int year = getIntInput(0, 3000);
+
+        librarySystem.searchBook(
+                title.isEmpty() ? null : title,
+                author.isEmpty() ? null : author,
+                year == 0 ? -1 : year
+        );
     }
 
     private int getIntInput(int min, int max) {

@@ -2,10 +2,12 @@ package ap.projects.finalproject;
 
 public class LibrarySystem {
     private StudentManager studentManager;
+    private BookManager bookManager;
     private MenuHandler menuHandler;
 
     public LibrarySystem() {
         this.studentManager = new StudentManager();
+        this.bookManager = new BookManager();
         this.menuHandler = new MenuHandler(this);
     }
 
@@ -34,7 +36,11 @@ public class LibrarySystem {
     }
 
     public void displayAvailableBooks() {
-        System.out.println("Not implemented.");
+        bookManager.displayAvailableBooks();
+    }
+
+    public void searchBook(String title, String author, int year) {
+        bookManager.searchBooks(title, author, year);
     }
 
     public void start() {

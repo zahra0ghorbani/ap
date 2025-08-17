@@ -28,11 +28,11 @@ public class StudentManager {
                 .orElse(null);
     }
 
-    public int getStudentCount() {
-        return students.size();
-    }
-
     private boolean isUsernameTaken(String username) {
         return students.stream().anyMatch(s -> s.getUsername().equals(username));
+    }
+
+    public int getStudentCount() {
+        return students.size();
     }
 }

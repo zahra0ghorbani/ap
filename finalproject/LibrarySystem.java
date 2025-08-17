@@ -1,5 +1,7 @@
 package ap.projects.finalproject;
 
+import java.time.LocalDate;
+
 public class LibrarySystem {
     private StudentManager studentManager;
     private BookManager bookManager;
@@ -12,7 +14,7 @@ public class LibrarySystem {
     }
 
     public int getStudentCount() {
-        return this.studentManager.getStudentCount();
+        return studentManager.getStudentCount();
     }
 
     public void registerStudent(String name, String studentId, String username, String password) {
@@ -27,11 +29,13 @@ public class LibrarySystem {
         System.out.println("Not implemented.");
     }
 
-    public void borrowBook(Student student) {
-        System.out.println("Not implemented.");
+    public void borrowBook(Student student, Book book, LocalDate startDate, LocalDate endDate) {
+        BorrowRequest request = new BorrowRequest(student, book, startDate, endDate);
+        student.addBorrowRequest(request);
+        System.out.println("Borrow request submitted.");
     }
 
-    public void returnBook(Student student) {
+    public void returnBook(Student student, Book book) {
         System.out.println("Not implemented.");
     }
 
@@ -39,8 +43,8 @@ public class LibrarySystem {
         bookManager.displayAvailableBooks();
     }
 
-    public void searchBook(String title, String author, int year) {
-        bookManager.searchBooks(title, author, year);
+    public BookManager getBookManager() {
+        return bookManager;
     }
 
     public void start() {

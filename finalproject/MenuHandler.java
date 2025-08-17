@@ -1,5 +1,7 @@
 package ap.projects.finalproject;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Scanner;
 
 public class MenuHandler {
@@ -19,7 +21,7 @@ public class MenuHandler {
             System.out.println("1. Student Registration");
             System.out.println("2. Student Login");
             System.out.println("3. View Registered Student Count");
-            System.out.println("4. Search Book");
+            System.out.println("4. View Available Books");
             System.out.println("5. Exit");
             System.out.print("Please enter your choice: ");
 
@@ -36,7 +38,7 @@ public class MenuHandler {
                     displayStudentCount();
                     break;
                 case 4:
-                    handleBookSearch();
+                    librarySystem.displayAvailableBooks();
                     break;
                 case 5:
                     System.out.println("Exiting system. Goodbye!");
@@ -80,82 +82,65 @@ public class MenuHandler {
         System.out.print("Password: ");
         String password = scanner.nextLine();
 
-        currentUser = librarySystem.authenticateStudent(username, password);
+        Student student = librarySystem.authenticateStudent(username, password);
 
-        if (currentUser != null) {
-            System.out.println("Login successful! Welcome, " + currentUser.getName());
-            displayLoggedInStudentMenu();
+        if (student != null) {
+            System.out.println("Login successful. Welcome, " + student.getName() + "!");
+            currentUser = student;
+            displayStudentMenu();
         } else {
-            System.out.println("Invalid username or password. Please try again.");
+            System.out.println("Invalid username or password.");
         }
     }
 
-    private void displayLoggedInStudentMenu() {
-        while (currentUser != null) {
-            System.out.println("\n=== Student Dashboard ===");
-            System.out.println("1. View My Information");
-            System.out.println("2. Edit My Information");
-            System.out.println("3. Borrow a Book");
-            System.out.println("4. Return a Book");
-            System.out.println("5. View Available Books");
-            System.out.println("6. Logout");
-            System.out.print("Please enter your choice: ");
+    private void displayStudentMenu() {
+        while (true) {
+            System.out.println("\n--- Student Menu ---");
+            System.out.println("1. Borrow Book");
+            System.out.println("2. Back to Main Menu");
+            System.out.print("Enter choice: ");
 
-            int choice = getIntInput(1, 6);
+            int choice = getIntInput(1, 2);
 
             switch (choice) {
                 case 1:
-                    System.out.println("\n--- My Information ---");
-                    System.out.println(currentUser);
+                    handleBorrowBook();
                     break;
                 case 2:
-                    librarySystem.editStudentInformation(currentUser);
-                    break;
-                case 3:
-                    librarySystem.borrowBook(currentUser);
-                    break;
-                case 4:
-                    librarySystem.returnBook(currentUser);
-                    break;
-                case 5:
-                    librarySystem.displayAvailableBooks();
-                    break;
-                case 6:
-                    currentUser = null;
-                    System.out.println("Logged out successfully.");
                     return;
-                default:
-                    System.out.println("Invalid option! Please try again.");
             }
         }
     }
 
-    private void handleBookSearch() {
-        System.out.println("\n--- Search Book ---");
-        System.out.print("Enter title (or leave empty): ");
+    private void handleBorrowBook() {
+        librarySystem.displayAvailableBooks();
+        System.out.print("Enter book title to borrow: ");
         String title = scanner.nextLine();
 
-        System.out.print("Enter author (or leave empty): ");
-        String author = scanner.nextLine();
+        List<Book> foundBooks = librarySystem.getBookManager().searchBooks(title, null, null);
 
-        System.out.print("Enter year (or 0 to skip): ");
-        int year = getIntInput(0, 3000);
+        if (foundBooks.isEmpty()) {
+            System.out.println("Book not found or not available.");
+            return;
+        }
 
-        librarySystem.searchBook(
-                title.isEmpty() ? null : title,
-                author.isEmpty() ? null : author,
-                year == 0 ? -1 : year
-        );
+        Book book = foundBooks.get(0);
+
+        System.out.print("Start date (YYYY-MM-DD): ");
+        LocalDate startDate = LocalDate.parse(scanner.nextLine());
+
+        System.out.print("End date (YYYY-MM-DD): ");
+        LocalDate endDate = LocalDate.parse(scanner.nextLine());
+
+        librarySystem.borrowBook(currentUser, book, startDate, endDate);
     }
 
     private int getIntInput(int min, int max) {
         while (true) {
             try {
-                int input = Integer.parseInt(scanner.nextLine());
-                if (input >= min && input <= max) {
-                    return input;
-                }
-                System.out.printf("Please enter a number between %d and %d: ", min, max);
+                int choice = Integer.parseInt(scanner.nextLine());
+                if (choice >= min && choice <= max) return choice;
+                else System.out.print("Please enter a valid number between " + min + " and " + max + ": ");
             } catch (NumberFormatException e) {
                 System.out.print("Invalid input. Please enter a number: ");
             }

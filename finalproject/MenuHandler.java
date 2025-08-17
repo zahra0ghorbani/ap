@@ -37,8 +37,6 @@ public class MenuHandler {
                 case 4:
                     System.out.println("Exiting system. Goodbye!");
                     return;
-                default:
-                    System.out.println("Invalid option! Please try again.");
             }
             System.out.println("___________________________");
         }
@@ -120,8 +118,6 @@ public class MenuHandler {
                     currentUser = null;
                     System.out.println("Logged out successfully.");
                     return;
-                default:
-                    System.out.println("Invalid option! Please try again.");
             }
         }
     }

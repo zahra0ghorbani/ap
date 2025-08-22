@@ -72,9 +72,10 @@ public class MenuHandler {
             System.out.println("1. View Registered Student Count");
             System.out.println("2. Search Book by Title");
             System.out.println("3. Back to Main Menu");
+            System.out.println("4. View Simple Statistics");
             System.out.print("Please enter your choice: ");
 
-            int choice = getIntInput(1, 3);
+            int choice = getIntInput(1, 4);
 
             switch (choice) {
                 case 1:
@@ -85,9 +86,13 @@ public class MenuHandler {
                     break;
                 case 3:
                     return;
+                case 4:
+                    displayGuestStatistics();
+                    break;
             }
         }
     }
+
 
     private void displayStudentCount() {
         int studentCount = librarySystem.getStudentCount();
@@ -254,4 +259,26 @@ public class MenuHandler {
             }
         }
     }
+
+
+    private void displayGuestStatistics() {
+        int totalStudents = librarySystem.getStudentCount();
+        int totalBooks = librarySystem.getBookManager().getBooks().size();
+
+        int totalBorrowed = 0;
+        int currentlyBorrowed = 0;
+        for (Book book : librarySystem.getBookManager().getBooks()) {
+            if (!book.isAvailable()) {
+                totalBorrowed++;
+                currentlyBorrowed++;
+            }
+        }
+
+        System.out.println("\n--- Guest Simple Statistics ---");
+        System.out.println("Total Students: " + totalStudents);
+        System.out.println("Total Books: " + totalBooks);
+        System.out.println("Total Borrowed Books: " + totalBorrowed);
+        System.out.println("Currently Borrowed Books: " + currentlyBorrowed);
+    }
+
 }

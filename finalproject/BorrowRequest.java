@@ -17,26 +17,11 @@ public class BorrowRequest {
         this.approved = false;
     }
 
-    public Student getStudent() {
-        return student;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public boolean isApproved() {
-        return approved;
-    }
-
+    public Student getStudent() { return student; }
+    public Book getBook() { return book; }
+    public LocalDate getStartDate() { return startDate; }
+    public LocalDate getEndDate() { return endDate; }
+    public boolean isApproved() { return approved; }
     public void approve() {
         this.approved = true;
         this.book.setAvailable(false);

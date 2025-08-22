@@ -11,7 +11,8 @@ public class LibrarySystem {
         this.studentManager = new StudentManager();
         this.bookManager = new BookManager();
         this.menuHandler = new MenuHandler(this);
-        //books list
+
+        // Sample books for testing
         bookManager.addBook("Java Programming", "James Gosling", 1995);
         bookManager.addBook("Clean Code", "Robert C. Martin", 2008);
         bookManager.addBook("Effective Java", "Joshua Bloch", 2018);

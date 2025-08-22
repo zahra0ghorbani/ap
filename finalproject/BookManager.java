@@ -26,12 +26,15 @@ public class BookManager {
 
     public void displayAvailableBooks() {
         System.out.println("\n--- Available Books ---");
-        books.stream()
-                .filter(Book::isAvailable)
-                .forEach(System.out::println);
+        boolean hasAvailable = false;
+        for (Book book : books) {
+            if (book.isAvailable()) {
+                System.out.println(book);
+                hasAvailable = true;
+            }
+        }
+        if (!hasAvailable) System.out.println("No books available at the moment.");
     }
 
-    public List<Book> getBooks() {
-        return books;
-    }
+    public List<Book> getBooks() { return books; }
 }

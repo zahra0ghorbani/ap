@@ -1,6 +1,7 @@
 package ap.projects.finalproject;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Scanner;
 
 public class MenuHandler {
@@ -34,10 +35,7 @@ public class MenuHandler {
                 case 3:
                     System.out.println("Exiting system. Goodbye!");
                     return;
-                default:
-                    System.out.println("Invalid option! Please try again.");
             }
-            System.out.println("___________________________");
         }
     }
 
@@ -64,8 +62,6 @@ public class MenuHandler {
                     break;
                 case 4:
                     return;
-                default:
-                    System.out.println("Invalid option! Please try again.");
             }
         }
     }
@@ -74,19 +70,21 @@ public class MenuHandler {
         while (true) {
             System.out.println("\n--- Guest Menu ---");
             System.out.println("1. View Registered Student Count");
-            System.out.println("2. Back to Main Menu");
+            System.out.println("2. Search Book by Title");
+            System.out.println("3. Back to Main Menu");
             System.out.print("Please enter your choice: ");
 
-            int choice = getIntInput(1, 2);
+            int choice = getIntInput(1, 3);
 
             switch (choice) {
                 case 1:
                     displayStudentCount();
                     break;
                 case 2:
+                    handleGuestBookSearch();
+                    break;
+                case 3:
                     return;
-                default:
-                    System.out.println("Invalid option! Please try again.");
             }
         }
     }
@@ -98,38 +96,30 @@ public class MenuHandler {
 
     private void handleStudentRegistration() {
         System.out.println("\n--- New Student Registration ---");
-
         System.out.print("Student name: ");
         String name = scanner.nextLine();
-
         System.out.print("Student ID: ");
         String studentId = scanner.nextLine();
-
         System.out.print("Username: ");
         String username = scanner.nextLine();
-
         System.out.print("Password: ");
         String password = scanner.nextLine();
-
         librarySystem.registerStudent(name, studentId, username, password);
     }
 
     private void handleStudentLogin() {
         System.out.println("\n--- Student Login ---");
-
         System.out.print("Username: ");
         String username = scanner.nextLine();
-
         System.out.print("Password: ");
         String password = scanner.nextLine();
-
         currentUser = librarySystem.authenticateStudent(username, password);
 
         if (currentUser != null) {
             System.out.println("Login successful! Welcome, " + currentUser.getName());
             displayLoggedInStudentMenu();
         } else {
-            System.out.println("Invalid username or password. Please try again.");
+            System.out.println("Invalid username or password.");
         }
     }
 
@@ -167,8 +157,6 @@ public class MenuHandler {
                     currentUser = null;
                     System.out.println("Logged out successfully.");
                     return;
-                default:
-                    System.out.println("Invalid option! Please try again.");
             }
         }
     }
@@ -176,14 +164,16 @@ public class MenuHandler {
     private void handleBorrowBook() {
         System.out.println("\n--- Borrow a Book ---");
         librarySystem.displayAvailableBooks();
-
         System.out.print("Enter the title of the book you want to borrow: ");
         String title = scanner.nextLine();
 
-        Book selectedBook = librarySystem.getBookManager().getBooks().stream()
-                .filter(b -> b.getTitle().equalsIgnoreCase(title) && b.isAvailable())
-                .findFirst()
-                .orElse(null);
+        Book selectedBook = null;
+        for (Book b : librarySystem.getBookManager().getBooks()) {
+            if (b.getTitle().equalsIgnoreCase(title) && b.isAvailable()) {
+                selectedBook = b;
+                break;
+            }
+        }
 
         if (selectedBook == null) {
             System.out.println("Book not found or not available.");
@@ -193,13 +183,11 @@ public class MenuHandler {
         try {
             System.out.print("Enter start date (yyyy-mm-dd): ");
             LocalDate startDate = LocalDate.parse(scanner.nextLine());
-
             System.out.print("Enter end date (yyyy-mm-dd): ");
             LocalDate endDate = LocalDate.parse(scanner.nextLine());
-
             librarySystem.borrowBook(currentUser, selectedBook, startDate, endDate);
         } catch (Exception e) {
-            System.out.println("Invalid date format. Please use yyyy-mm-dd.");
+            System.out.println("Invalid date format.");
         }
     }
 
@@ -211,39 +199,58 @@ public class MenuHandler {
             return;
         }
 
-        currentUser.getBorrowRequests().forEach(req -> {
+        for (BorrowRequest req : currentUser.getBorrowRequests()) {
             System.out.println("Book: " + req.getBook().getTitle() +
                     " | Borrowed from " + req.getStartDate() +
                     " to " + req.getEndDate() +
                     " | Approved: " + (req.isApproved() ? "Yes" : "Pending"));
-        });
+        }
 
         System.out.print("Enter the title of the book you want to return: ");
         String title = scanner.nextLine();
 
-        BorrowRequest request = currentUser.getBorrowRequests().stream()
-                .filter(r -> r.getBook().getTitle().equalsIgnoreCase(title) && !r.getBook().isAvailable())
-                .findFirst()
-                .orElse(null);
+        BorrowRequest request = null;
+        for (BorrowRequest r : currentUser.getBorrowRequests()) {
+            if (r.getBook().getTitle().equalsIgnoreCase(title) && !r.getBook().isAvailable()) {
+                request = r;
+                break;
+            }
+        }
 
         if (request == null) {
-            System.out.println("No matching borrowed book found or it is not approved yet.");
+            System.out.println("No matching borrowed book found.");
             return;
         }
 
         librarySystem.returnBook(currentUser, request.getBook());
     }
 
+    private void handleGuestBookSearch() {
+        System.out.print("Enter book title to search: ");
+        String title = scanner.nextLine();
+
+        List<Book> results = librarySystem.getBookManager().searchBooks(title, null, null);
+
+        if (results.isEmpty()) {
+            System.out.println("No books found with this title.");
+        } else {
+            System.out.println("\n--- Search Results ---");
+            for (Book book : results) {
+                System.out.println("Title: " + book.getTitle() +
+                        " | Author: " + book.getAuthor() +
+                        " | Year: " + book.getYear());
+            }
+        }
+    }
+
     private int getIntInput(int min, int max) {
         while (true) {
             try {
                 int input = Integer.parseInt(scanner.nextLine());
-                if (input >= min && input <= max) {
-                    return input;
-                }
-                System.out.printf("Please enter a number between %d and %d: ", min, max);
+                if (input >= min && input <= max) return input;
+                System.out.printf("Enter a number between %d and %d: ", min, max);
             } catch (NumberFormatException e) {
-                System.out.print("Invalid input. Please enter a number: ");
+                System.out.print("Invalid input. Enter a number: ");
             }
         }
     }

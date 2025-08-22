@@ -12,11 +12,10 @@ public class StudentManager {
 
     public void registerStudent(String name, String studentId, String username, String password) {
         if (isUsernameTaken(username)) {
-            System.out.println("This username already exists. Please choose a different username.");
+            System.out.println("This username already exists. Choose a different username.");
             return;
         }
-        Student newStudent = new Student(name, studentId, username, password);
-        students.add(newStudent);
+        students.add(new Student(name, studentId, username, password));
         System.out.println("Student registration completed successfully.");
     }
 
@@ -27,22 +26,9 @@ public class StudentManager {
                 .orElse(null);
     }
 
-    public void displayStudents() {
-        System.out.println("\n--- List of Registered Students ---");
-        if (students.isEmpty()) {
-            System.out.println("No students have registered yet.");
-            return;
-        }
-        for (Student student : students) {
-            System.out.println(student);
-        }
-    }
-
     private boolean isUsernameTaken(String username) {
         return students.stream().anyMatch(s -> s.getUsername().equals(username));
     }
 
-    public int getStudentCount() {
-        return students.size();
-    }
+    public int getStudentCount() { return students.size(); }
 }

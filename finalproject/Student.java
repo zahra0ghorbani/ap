@@ -18,29 +18,13 @@ public class Student {
         this.borrowRequests = new ArrayList<>();
     }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
+    public String getStudentId() { return studentId; }
+    public String getUsername() { return username; }
+    public String getPassword() { return password; }
 
-    public String getStudentId() {
-        return studentId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void addBorrowRequest(BorrowRequest request) {
-        borrowRequests.add(request);
-    }
-
-    public List<BorrowRequest> getBorrowRequests() {
-        return borrowRequests;
-    }
+    public void addBorrowRequest(BorrowRequest request) { borrowRequests.add(request); }
+    public List<BorrowRequest> getBorrowRequests() { return borrowRequests; }
 
     @Override
     public String toString() {

@@ -20,10 +20,11 @@ public class MenuHandler {
             System.out.println("\n=== University Library Management System ===");
             System.out.println("1. Student Menu (Register/Login)");
             System.out.println("2. Guest Menu");
-            System.out.println("3. Exit");
+            System.out.println("3. Employee Menu");
+            System.out.println("4. Exit");
             System.out.print("Please enter your choice: ");
 
-            int choice = getIntInput(1, 3);
+            int choice = getIntInput(1, 4);
 
             switch (choice) {
                 case 1:
@@ -33,11 +34,15 @@ public class MenuHandler {
                     displayGuestMenu();
                     break;
                 case 3:
+                    displayEmployeeMenu();
+                    break;
+                case 4:
                     System.out.println("Exiting system. Goodbye!");
                     return;
             }
         }
     }
+
 
     private void displayStudentMainMenu() {
         while (true) {
@@ -280,5 +285,36 @@ public class MenuHandler {
         System.out.println("Total Borrowed Books: " + totalBorrowed);
         System.out.println("Currently Borrowed Books: " + currentlyBorrowed);
     }
+    private void displayEmployeeMenu() {
+        while (true) {
+            System.out.println("\n--- Employee Menu ---");
+            System.out.println("1. Add Book");
+            System.out.println("2. Remove Book");
+            System.out.println("3. View All Borrow Requests");
+            System.out.println("4. Approve/Deny Borrow Request");
+            System.out.println("5. Back to Main Menu");
+            System.out.print("Please enter your choice: ");
+
+            int choice = getIntInput(1, 5);
+
+            switch (choice) {
+                case 1:
+                    System.out.println("Feature not implemented yet: Add Book");
+                    break;
+                case 2:
+                    System.out.println("Feature not implemented yet: Remove Book");
+                    break;
+                case 3:
+                    System.out.println("Feature not implemented yet: View All Borrow Requests");
+                    break;
+                case 4:
+                    System.out.println("Feature not implemented yet: Approve/Deny Borrow Request");
+                    break;
+                case 5:
+                    return;
+            }
+        }
+    }
+
 
 }

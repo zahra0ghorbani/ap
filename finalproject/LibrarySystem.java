@@ -11,6 +11,10 @@ public class LibrarySystem {
         this.studentManager = new StudentManager();
         this.bookManager = new BookManager();
         this.menuHandler = new MenuHandler(this);
+        //books list
+        bookManager.addBook("Java Programming", "James Gosling", 1995);
+        bookManager.addBook("Clean Code", "Robert C. Martin", 2008);
+        bookManager.addBook("Effective Java", "Joshua Bloch", 2018);
     }
 
     public int getStudentCount() {
@@ -26,17 +30,18 @@ public class LibrarySystem {
     }
 
     public void editStudentInformation(Student student) {
-        System.out.println("Not implemented.");
+        System.out.println("Not implemented yet.");
     }
 
     public void borrowBook(Student student, Book book, LocalDate startDate, LocalDate endDate) {
         BorrowRequest request = new BorrowRequest(student, book, startDate, endDate);
         student.addBorrowRequest(request);
-        System.out.println("Borrow request submitted.");
+        System.out.println("Borrow request submitted for book: " + book.getTitle());
     }
 
     public void returnBook(Student student, Book book) {
-        System.out.println("Not implemented.");
+        book.setAvailable(true);
+        System.out.println("Book returned successfully: " + book.getTitle());
     }
 
     public void displayAvailableBooks() {

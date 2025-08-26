@@ -8,11 +8,13 @@ public class MenuHandler {
     private Scanner scanner;
     private LibrarySystem librarySystem;
     private Student currentUser;
+    private boolean employeeLoggedIn;
 
     public MenuHandler(LibrarySystem librarySystem) {
         this.scanner = new Scanner(System.in);
         this.librarySystem = librarySystem;
         this.currentUser = null;
+        this.employeeLoggedIn = false;
     }
 
     public void displayMainMenu() {
@@ -23,26 +25,15 @@ public class MenuHandler {
             System.out.println("3. Employee Menu");
             System.out.println("4. Exit");
             System.out.print("Please enter your choice: ");
-
             int choice = getIntInput(1, 4);
-
             switch (choice) {
-                case 1:
-                    displayStudentMainMenu();
-                    break;
-                case 2:
-                    displayGuestMenu();
-                    break;
-                case 3:
-                    displayEmployeeMenu();
-                    break;
-                case 4:
-                    System.out.println("Exiting system. Goodbye!");
-                    return;
+                case 1: displayStudentMainMenu(); break;
+                case 2: displayGuestMenu(); break;
+                case 3: handleEmployeeLogin(); break;
+                case 4: System.out.println("Exiting system. Goodbye!"); return;
             }
         }
     }
-
 
     private void displayStudentMainMenu() {
         while (true) {
@@ -52,21 +43,12 @@ public class MenuHandler {
             System.out.println("3. View Registered Student Count");
             System.out.println("4. Back to Main Menu");
             System.out.print("Please enter your choice: ");
-
             int choice = getIntInput(1, 4);
-
             switch (choice) {
-                case 1:
-                    handleStudentRegistration();
-                    break;
-                case 2:
-                    handleStudentLogin();
-                    break;
-                case 3:
-                    displayStudentCount();
-                    break;
-                case 4:
-                    return;
+                case 1: handleStudentRegistration(); break;
+                case 2: handleStudentLogin(); break;
+                case 3: displayStudentCount(); break;
+                case 4: return;
             }
         }
     }
@@ -79,25 +61,75 @@ public class MenuHandler {
             System.out.println("3. Back to Main Menu");
             System.out.println("4. View Simple Statistics");
             System.out.print("Please enter your choice: ");
-
             int choice = getIntInput(1, 4);
-
             switch (choice) {
-                case 1:
-                    displayStudentCount();
-                    break;
-                case 2:
-                    handleGuestBookSearch();
-                    break;
-                case 3:
-                    return;
-                case 4:
-                    displayGuestStatistics();
-                    break;
+                case 1: displayStudentCount(); break;
+                case 2: handleGuestBookSearch(); break;
+                case 3: return;
+                case 4: displayGuestStatistics(); break;
             }
         }
     }
 
+    private void displayGuestStatistics() {
+        int totalStudents = librarySystem.getStudentCount();
+        int totalBooks = librarySystem.getBookManager().getBooks().size();
+        int totalBorrowed = 0;
+        int currentlyBorrowed = 0;
+        for (Book book : librarySystem.getBookManager().getBooks()) {
+            if (!book.isAvailable()) {
+                totalBorrowed++;
+                currentlyBorrowed++;
+            }
+        }
+        System.out.println("\n--- Guest Simple Statistics ---");
+        System.out.println("Total Students: " + totalStudents);
+        System.out.println("Total Books: " + totalBooks);
+        System.out.println("Total Borrowed Books: " + totalBorrowed);
+        System.out.println("Currently Borrowed Books: " + currentlyBorrowed);
+    }
+
+    private void handleEmployeeLogin() {
+        if (employeeLoggedIn) {
+            displayEmployeeMenu();
+            return;
+        }
+        System.out.println("\n--- Employee Login ---");
+        System.out.print("Username: ");
+        String username = scanner.nextLine();
+        System.out.print("Password: ");
+        String password = scanner.nextLine();
+        Employee emp = librarySystem.getEmployee();
+        if (emp.getUsername().equals(username) && emp.checkPassword(password)) {
+            System.out.println("Employee login successful.");
+            employeeLoggedIn = true;
+            displayEmployeeMenu();
+        } else {
+            System.out.println("Invalid credentials.");
+        }
+    }
+
+    private void displayEmployeeMenu() {
+        while (true) {
+            System.out.println("\n--- Employee Menu ---");
+            System.out.println("1. Add Book");
+            System.out.println("2. Remove Book");
+            System.out.println("3. View All Borrow Requests");
+            System.out.println("4. Approve/Deny Borrow Request");
+            System.out.println("5. Change Employee Password");
+            System.out.println("6. Logout");
+            System.out.print("Please enter your choice: ");
+            int choice = getIntInput(1, 6);
+            switch (choice) {
+                case 1: handleAddBook(); break;
+                case 2: System.out.println("Feature not implemented yet: Remove Book"); break;
+                case 3: System.out.println("Feature not implemented yet: View All Borrow Requests"); break;
+                case 4: System.out.println("Feature not implemented yet: Approve/Deny Borrow Request"); break;
+                case 5: handleChangeEmployeePassword(); break;
+                case 6: employeeLoggedIn = false; System.out.println("Employee logged out."); return;
+            }
+        }
+    }
 
     private void displayStudentCount() {
         int studentCount = librarySystem.getStudentCount();
@@ -124,7 +156,6 @@ public class MenuHandler {
         System.out.print("Password: ");
         String password = scanner.nextLine();
         currentUser = librarySystem.authenticateStudent(username, password);
-
         if (currentUser != null) {
             System.out.println("Login successful! Welcome, " + currentUser.getName());
             displayLoggedInStudentMenu();
@@ -143,30 +174,14 @@ public class MenuHandler {
             System.out.println("5. View Available Books");
             System.out.println("6. Logout");
             System.out.print("Please enter your choice: ");
-
             int choice = getIntInput(1, 6);
-
             switch (choice) {
-                case 1:
-                    System.out.println("\n--- My Information ---");
-                    System.out.println(currentUser);
-                    break;
-                case 2:
-                    librarySystem.editStudentInformation(currentUser);
-                    break;
-                case 3:
-                    handleBorrowBook();
-                    break;
-                case 4:
-                    handleReturnBook();
-                    break;
-                case 5:
-                    librarySystem.displayAvailableBooks();
-                    break;
-                case 6:
-                    currentUser = null;
-                    System.out.println("Logged out successfully.");
-                    return;
+                case 1: System.out.println("\n--- My Information ---"); System.out.println(currentUser); break;
+                case 2: librarySystem.editStudentInformation(currentUser); break;
+                case 3: handleBorrowBook(); break;
+                case 4: handleReturnBook(); break;
+                case 5: librarySystem.displayAvailableBooks(); break;
+                case 6: currentUser = null; System.out.println("Logged out successfully."); return;
             }
         }
     }
@@ -176,7 +191,6 @@ public class MenuHandler {
         librarySystem.displayAvailableBooks();
         System.out.print("Enter the title of the book you want to borrow: ");
         String title = scanner.nextLine();
-
         Book selectedBook = null;
         for (Book b : librarySystem.getBookManager().getBooks()) {
             if (b.getTitle().equalsIgnoreCase(title) && b.isAvailable()) {
@@ -184,12 +198,10 @@ public class MenuHandler {
                 break;
             }
         }
-
         if (selectedBook == null) {
             System.out.println("Book not found or not available.");
             return;
         }
-
         try {
             System.out.print("Enter start date (yyyy-mm-dd): ");
             LocalDate startDate = LocalDate.parse(scanner.nextLine());
@@ -203,22 +215,15 @@ public class MenuHandler {
 
     private void handleReturnBook() {
         System.out.println("\n--- Return a Book ---");
-
         if (currentUser.getBorrowRequests().isEmpty()) {
             System.out.println("You have no borrowed books.");
             return;
         }
-
         for (BorrowRequest req : currentUser.getBorrowRequests()) {
-            System.out.println("Book: " + req.getBook().getTitle() +
-                    " | Borrowed from " + req.getStartDate() +
-                    " to " + req.getEndDate() +
-                    " | Approved: " + (req.isApproved() ? "Yes" : "Pending"));
+            System.out.println("Book: " + req.getBook().getTitle() + " | Borrowed from " + req.getStartDate() + " to " + req.getEndDate() + " | Approved: " + (req.isApproved() ? "Yes" : "Pending"));
         }
-
         System.out.print("Enter the title of the book you want to return: ");
         String title = scanner.nextLine();
-
         BorrowRequest request = null;
         for (BorrowRequest r : currentUser.getBorrowRequests()) {
             if (r.getBook().getTitle().equalsIgnoreCase(title) && !r.getBook().isAvailable()) {
@@ -226,29 +231,23 @@ public class MenuHandler {
                 break;
             }
         }
-
         if (request == null) {
             System.out.println("No matching borrowed book found.");
             return;
         }
-
         librarySystem.returnBook(currentUser, request.getBook());
     }
 
     private void handleGuestBookSearch() {
         System.out.print("Enter book title to search: ");
         String title = scanner.nextLine();
-
         List<Book> results = librarySystem.getBookManager().searchBooks(title, null, null);
-
         if (results.isEmpty()) {
             System.out.println("No books found with this title.");
         } else {
             System.out.println("\n--- Search Results ---");
             for (Book book : results) {
-                System.out.println("Title: " + book.getTitle() +
-                        " | Author: " + book.getAuthor() +
-                        " | Year: " + book.getYear());
+                System.out.println("Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Year: " + book.getYear());
             }
         }
     }
@@ -265,56 +264,37 @@ public class MenuHandler {
         }
     }
 
-
-    private void displayGuestStatistics() {
-        int totalStudents = librarySystem.getStudentCount();
-        int totalBooks = librarySystem.getBookManager().getBooks().size();
-
-        int totalBorrowed = 0;
-        int currentlyBorrowed = 0;
-        for (Book book : librarySystem.getBookManager().getBooks()) {
-            if (!book.isAvailable()) {
-                totalBorrowed++;
-                currentlyBorrowed++;
-            }
-        }
-
-        System.out.println("\n--- Guest Simple Statistics ---");
-        System.out.println("Total Students: " + totalStudents);
-        System.out.println("Total Books: " + totalBooks);
-        System.out.println("Total Borrowed Books: " + totalBorrowed);
-        System.out.println("Currently Borrowed Books: " + currentlyBorrowed);
-    }
-    private void displayEmployeeMenu() {
+    private void handleAddBook() {
+        System.out.println("\n--- Add Book ---");
+        System.out.print("Enter book title: ");
+        String title = scanner.nextLine();
+        System.out.print("Enter author name: ");
+        String author = scanner.nextLine();
+        int year;
         while (true) {
-            System.out.println("\n--- Employee Menu ---");
-            System.out.println("1. Add Book");
-            System.out.println("2. Remove Book");
-            System.out.println("3. View All Borrow Requests");
-            System.out.println("4. Approve/Deny Borrow Request");
-            System.out.println("5. Back to Main Menu");
-            System.out.print("Please enter your choice: ");
-
-            int choice = getIntInput(1, 5);
-
-            switch (choice) {
-                case 1:
-                    System.out.println("Feature not implemented yet: Add Book");
-                    break;
-                case 2:
-                    System.out.println("Feature not implemented yet: Remove Book");
-                    break;
-                case 3:
-                    System.out.println("Feature not implemented yet: View All Borrow Requests");
-                    break;
-                case 4:
-                    System.out.println("Feature not implemented yet: Approve/Deny Borrow Request");
-                    break;
-                case 5:
-                    return;
+            try {
+                System.out.print("Enter publication year: ");
+                year = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid year. Please enter a number.");
             }
         }
+        librarySystem.getBookManager().addBook(title, author, year);
+        System.out.println("Book added successfully: " + title);
     }
 
-
+    private void handleChangeEmployeePassword() {
+        System.out.println("\n--- Change Employee Password ---");
+        System.out.print("Enter current password: ");
+        String currentPassword = scanner.nextLine();
+        if (!librarySystem.getEmployee().checkPassword(currentPassword)) {
+            System.out.println("Incorrect current password.");
+            return;
+        }
+        System.out.print("Enter new password: ");
+        String newPassword = scanner.nextLine();
+        librarySystem.getEmployee().setPassword(newPassword);
+        System.out.println("Password changed successfully.");
+    }
 }

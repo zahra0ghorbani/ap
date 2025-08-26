@@ -6,13 +6,14 @@ public class LibrarySystem {
     private StudentManager studentManager;
     private BookManager bookManager;
     private MenuHandler menuHandler;
+    private Employee employee;
 
     public LibrarySystem() {
         this.studentManager = new StudentManager();
         this.bookManager = new BookManager();
         this.menuHandler = new MenuHandler(this);
+        this.employee = new Employee("admin", "1234"); // default employee
 
-        // Sample books for testing
         bookManager.addBook("Java Programming", "James Gosling", 1995);
         bookManager.addBook("Clean Code", "Robert C. Martin", 2008);
         bookManager.addBook("Effective Java", "Joshua Bloch", 2018);
@@ -51,6 +52,10 @@ public class LibrarySystem {
 
     public BookManager getBookManager() {
         return bookManager;
+    }
+
+    public Employee getEmployee() {
+        return employee;
     }
 
     public void start() {

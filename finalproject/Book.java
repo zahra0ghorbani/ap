@@ -25,6 +25,20 @@ public class Book {
         return year;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+
+
     public boolean isAvailable() {
         return available;
     }

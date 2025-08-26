@@ -115,23 +115,67 @@ public class MenuHandler {
             System.out.println("1. Add Book");
             System.out.println("2. Remove Book");
             System.out.println("3. Register New Book With Details");
-            System.out.println("4. View All Borrow Requests");
-            System.out.println("5. Approve/Deny Borrow Request");
-            System.out.println("6. Change Employee Password");
-            System.out.println("7. Logout");
+            System.out.println("4. Search Book");
+            System.out.println("5. Edit Book Information");
+            System.out.println("6. View All Borrow Requests");
+            System.out.println("7. Approve/Deny Borrow Request");
+            System.out.println("8. Change Employee Password");
+            System.out.println("9. Logout");
             System.out.print("Please enter your choice: ");
-            int choice = getIntInput(1, 7);
+            int choice = getIntInput(1, 9);
             switch (choice) {
                 case 1: handleAddBook(); break;
                 case 2: System.out.println("Feature not implemented yet: Remove Book"); break;
                 case 3: handleRegisterBookDetails(); break;
-                case 4: System.out.println("Feature not implemented yet: View All Borrow Requests"); break;
-                case 5: System.out.println("Feature not implemented yet: Approve/Deny Borrow Request"); break;
-                case 6: handleChangeEmployeePassword(); break;
-                case 7: employeeLoggedIn = false; System.out.println("Employee logged out."); return;
+                case 4: handleEmployeeBookSearch(); break;
+                case 5: handleEditBookInformation(); break;
+                case 6: System.out.println("Feature not implemented yet: View All Borrow Requests"); break;
+                case 7: System.out.println("Feature not implemented yet: Approve/Deny Borrow Request"); break;
+                case 8: handleChangeEmployeePassword(); break;
+                case 9: employeeLoggedIn = false; System.out.println("Employee logged out."); return;
             }
         }
     }
+
+    private void handleEmployeeBookSearch() {
+        System.out.print("Enter book title to search: ");
+        String title = scanner.nextLine();
+        List<Book> results = librarySystem.getBookManager().searchBooks(title, null, null);
+        if (results.isEmpty()) {
+            System.out.println("No books found with this title.");
+        } else {
+            System.out.println("\n--- Search Results ---");
+            for (Book book : results) {
+                System.out.println(book);
+            }
+        }
+    }
+
+    private void handleEditBookInformation() {
+        System.out.print("Enter the title of the book to edit: ");
+        String title = scanner.nextLine();
+        List<Book> results = librarySystem.getBookManager().searchBooks(title, null, null);
+        if (results.isEmpty()) {
+            System.out.println("Book not found.");
+            return;
+        }
+        Book book = results.get(0);
+        System.out.println("Editing Book: " + book);
+        System.out.print("Enter new title (leave blank to keep current): ");
+        String newTitle = scanner.nextLine();
+        if (!newTitle.trim().isEmpty()) book.setTitle(newTitle);
+        System.out.print("Enter new author (leave blank to keep current): ");
+        String newAuthor = scanner.nextLine();
+        if (!newAuthor.trim().isEmpty())  book.setAuthor(newAuthor);
+        System.out.print("Enter new year (0 to keep current): ");
+        int newYear = 0;
+        try {
+            newYear = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException ignored) {}
+        if (newYear > 0) book.setYear(newYear);
+        System.out.println("Book information updated: " + book);
+    }
+
 
     private void displayStudentCount() {
         int studentCount = librarySystem.getStudentCount();

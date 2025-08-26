@@ -18,9 +18,9 @@ public class BookManager {
 
     public List<Book> searchBooks(String title, String author, Integer year) {
         return books.stream()
-                .filter(b -> (title == null || b.getTitle().toLowerCase().contains(title.toLowerCase())) &&
-                        (author == null || b.getAuthor().toLowerCase().contains(author.toLowerCase())) &&
-                        (year == null || b.getYear() == year))
+                .filter(b -> (title == null || b.getTitle().toLowerCase().contains(title.toLowerCase()))
+                        && (author == null || b.getAuthor().toLowerCase().contains(author.toLowerCase()))
+                        && (year == null || b.getYear() == year))
                 .collect(Collectors.toList());
     }
 
@@ -36,5 +36,7 @@ public class BookManager {
         if (!hasAvailable) System.out.println("No books available at the moment.");
     }
 
-    public List<Book> getBooks() { return books; }
+    public List<Book> getBooks() {
+        return books;
+    }
 }

@@ -12,7 +12,7 @@ public class LibrarySystem {
         this.studentManager = new StudentManager();
         this.bookManager = new BookManager();
         this.menuHandler = new MenuHandler(this);
-        this.employee = new Employee("admin", "1234"); // default employee
+        this.employee = new Employee("admin", "1234");
 
         bookManager.addBook("Java Programming", "James Gosling", 1995);
         bookManager.addBook("Clean Code", "Robert C. Martin", 2008);

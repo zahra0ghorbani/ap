@@ -114,19 +114,21 @@ public class MenuHandler {
             System.out.println("\n--- Employee Menu ---");
             System.out.println("1. Add Book");
             System.out.println("2. Remove Book");
-            System.out.println("3. View All Borrow Requests");
-            System.out.println("4. Approve/Deny Borrow Request");
-            System.out.println("5. Change Employee Password");
-            System.out.println("6. Logout");
+            System.out.println("3. Register New Book With Details");
+            System.out.println("4. View All Borrow Requests");
+            System.out.println("5. Approve/Deny Borrow Request");
+            System.out.println("6. Change Employee Password");
+            System.out.println("7. Logout");
             System.out.print("Please enter your choice: ");
-            int choice = getIntInput(1, 6);
+            int choice = getIntInput(1, 7);
             switch (choice) {
                 case 1: handleAddBook(); break;
                 case 2: System.out.println("Feature not implemented yet: Remove Book"); break;
-                case 3: System.out.println("Feature not implemented yet: View All Borrow Requests"); break;
-                case 4: System.out.println("Feature not implemented yet: Approve/Deny Borrow Request"); break;
-                case 5: handleChangeEmployeePassword(); break;
-                case 6: employeeLoggedIn = false; System.out.println("Employee logged out."); return;
+                case 3: handleRegisterBookDetails(); break;
+                case 4: System.out.println("Feature not implemented yet: View All Borrow Requests"); break;
+                case 5: System.out.println("Feature not implemented yet: Approve/Deny Borrow Request"); break;
+                case 6: handleChangeEmployeePassword(); break;
+                case 7: employeeLoggedIn = false; System.out.println("Employee logged out."); return;
             }
         }
     }
@@ -283,6 +285,27 @@ public class MenuHandler {
         librarySystem.getBookManager().addBook(title, author, year);
         System.out.println("Book added successfully: " + title);
     }
+
+    private void handleRegisterBookDetails() {
+        System.out.println("\n--- Register New Book With Details ---");
+        System.out.print("Enter book title: ");
+        String title = scanner.nextLine();
+        System.out.print("Enter author name: ");
+        String author = scanner.nextLine();
+        int year;
+        while (true) {
+            try {
+                System.out.print("Enter publication year: ");
+                year = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid year. Please enter a number.");
+            }
+        }
+        librarySystem.getBookManager().addBook(title, author, year);
+        System.out.println("Book registered successfully: " + title + " | " + author + " | " + year);
+    }
+
 
     private void handleChangeEmployeePassword() {
         System.out.println("\n--- Change Employee Password ---");

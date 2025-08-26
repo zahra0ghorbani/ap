@@ -13,17 +13,28 @@ public class Book {
         this.available = true;
     }
 
-    public String getTitle() { return title; }
-    public String getAuthor() { return author; }
-    public int getYear() { return year; }
-    public boolean isAvailable() { return available; }
-    public void setAvailable(boolean available) { this.available = available; }
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
 
     @Override
     public String toString() {
-        return "Title: " + title +
-                " | Author: " + author +
-                " | Year: " + year +
-                " | Available: " + (available ? "Yes" : "No");
+        return "Title: " + title + " | Author: " + author + " | Year: " + year + " | Available: " + (available ? "Yes" : "No");
     }
 }

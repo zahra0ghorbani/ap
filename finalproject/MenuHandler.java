@@ -1,6 +1,7 @@
 package ap.projects.finalproject;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -130,12 +131,50 @@ public class MenuHandler {
                 case 4: handleEmployeeBookSearch(); break;
                 case 5: handleEditBookInformation(); break;
                 case 6: System.out.println("Feature not implemented yet: View All Borrow Requests"); break;
-                case 7: System.out.println("Feature not implemented yet: Approve/Deny Borrow Request"); break;
+                case 7: handleApproveDenyBorrowRequest(); break;
                 case 8: handleChangeEmployeePassword(); break;
                 case 9: employeeLoggedIn = false; System.out.println("Employee logged out."); return;
             }
         }
     }
+    private void handleApproveDenyBorrowRequest() {
+        System.out.println("\n--- Borrow Requests ---");
+        List<Student> students = librarySystem.getStudentManager().getStudents();
+        List<BorrowRequest> pendingRequests = new ArrayList<>();
+
+        for (Student s : students) {
+            for (BorrowRequest r : s.getBorrowRequests()) {
+                if (!r.isApproved()) {
+                    pendingRequests.add(r);
+                }
+            }
+        }
+
+        if (pendingRequests.isEmpty()) {
+            System.out.println("No pending borrow requests.");
+            return;
+        }
+
+        for (int i = 0; i < pendingRequests.size(); i++) {
+            BorrowRequest r = pendingRequests.get(i);
+            System.out.println((i + 1) + ". " + r.getBook().getTitle() + " | Student: " + r.getStudent().getName());
+        }
+
+        System.out.print("Enter request number to approve/deny (0 to cancel): ");
+        int choice = getIntInput(0, pendingRequests.size());
+        if (choice == 0) return;
+
+        BorrowRequest selectedRequest = pendingRequests.get(choice - 1);
+        System.out.print("Approve this request? (yes/no): ");
+        String decision = scanner.nextLine().trim().toLowerCase();
+        if (decision.equals("yes")) {
+            selectedRequest.approve();
+            System.out.println("Request approved.");
+        } else {
+            System.out.println("Request denied.");
+        }
+    }
+
 
     private void handleEmployeeBookSearch() {
         System.out.print("Enter book title to search: ");

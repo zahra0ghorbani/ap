@@ -1,6 +1,7 @@
 package ap.projects.finalproject;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class LibrarySystem {
     private StudentManager studentManager;
@@ -46,6 +47,10 @@ public class LibrarySystem {
         System.out.println("Book returned successfully: " + book.getTitle());
     }
 
+    public List<Student> getAllStudents() {
+        return studentManager.getStudents();
+    }
+
     public void displayAvailableBooks() {
         bookManager.displayAvailableBooks();
     }
@@ -65,5 +70,9 @@ public class LibrarySystem {
     public static void main(String[] args) {
         LibrarySystem system = new LibrarySystem();
         system.start();
+    }
+
+    public StudentManager getStudentManager() {
+        return studentManager;
     }
 }

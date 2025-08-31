@@ -119,19 +119,38 @@ public class MenuHandler {
             System.out.println("\n--- Manager Menu ---");
             System.out.println("1. Add Library Employee");
             System.out.println("2. Change Manager Password");
+            System.out.println("2. View Employee Performance");
             System.out.println("3. Logout");
             System.out.print("Enter your choice: ");
             int choice = getIntInput(1, 3);
             switch (choice) {
                 case 1: handleAddEmployee(); break;
                 case 2: handleChangeManagerPassword(); break;
-                case 3:
+                case 3: displayEmployeePerformance();break;
+                case 4:
                     managerLoggedIn = false;
                     System.out.println("Manager logged out.");
                     return;
             }
         }
     }
+
+    private void displayEmployeePerformance() {
+        List<Employee> employees = librarySystem.getManager().getEmployees();
+        if (employees.isEmpty()) {
+            System.out.println("No employees found.");
+            return;
+        }
+        System.out.println("\n--- Employee Performance ---");
+        for (Employee emp : employees) {
+            System.out.println("Username: " + emp.getUsername());
+            System.out.println("Books Added: " + emp.getAddedBooksCount());
+            System.out.println("Total Borrowed Books: " + emp.getTotalBorrowed());
+            System.out.println("Total Received Books: " + emp.getTotalReceived());
+            System.out.println("----------------------------");
+        }
+    }
+
 
     private void handleAddEmployee() {
         System.out.print("Enter new employee username: ");

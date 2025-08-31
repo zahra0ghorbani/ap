@@ -9,16 +9,24 @@ public class LibrarySystem {
     private BookManager bookManager;
     private MenuHandler menuHandler;
     private Employee employee;
+    private Manager manager;
 
     public LibrarySystem() {
         this.studentManager = new StudentManager();
         this.bookManager = new BookManager();
         this.menuHandler = new MenuHandler(this);
         this.employee = new Employee("admin", "1234");
+        this.manager = new Manager("manager", "4321");
 
         bookManager.addBook("Java Programming", "James Gosling", 1995);
         bookManager.addBook("Clean Code", "Robert C. Martin", 2008);
         bookManager.addBook("Effective Java", "Joshua Bloch", 2018);
+    }
+
+
+
+    public Manager getManager() {
+        return manager;
     }
 
     public int getStudentCount() {
@@ -90,4 +98,5 @@ public class LibrarySystem {
         }
         return allRequests;
     }
+
 }

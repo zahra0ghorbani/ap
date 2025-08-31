@@ -24,14 +24,16 @@ public class MenuHandler {
             System.out.println("1. Student Menu (Register/Login)");
             System.out.println("2. Guest Menu");
             System.out.println("3. Employee Menu");
-            System.out.println("4. Exit");
+            System.out.println("4. Manager Menu");
+            System.out.println("5. Exit");
             System.out.print("Please enter your choice: ");
             int choice = getIntInput(1, 4);
             switch (choice) {
                 case 1: displayStudentMainMenu(); break;
                 case 2: displayGuestMenu(); break;
                 case 3: handleEmployeeLogin(); break;
-                case 4: System.out.println("Exiting system. Goodbye!"); return;
+                case 4: handleManagerLogin(); break;
+                case 5: System.out.println("Exiting system. Goodbye!"); return;
             }
         }
     }
@@ -89,6 +91,70 @@ public class MenuHandler {
         System.out.println("Total Borrowed Books: " + totalBorrowed);
         System.out.println("Currently Borrowed Books: " + currentlyBorrowed);
     }
+
+    private boolean managerLoggedIn = false;
+
+    private void handleManagerLogin() {
+        if (managerLoggedIn) {
+            displayManagerMenu();
+            return;
+        }
+        System.out.println("\n--- Manager Login ---");
+        System.out.print("Username: ");
+        String username = scanner.nextLine();
+        System.out.print("Password: ");
+        String password = scanner.nextLine();
+        Manager m = librarySystem.getManager();
+        if (m.getUsername().equals(username) && m.checkPassword(password)) {
+            System.out.println("Manager login successful.");
+            managerLoggedIn = true;
+            displayManagerMenu();
+        } else {
+            System.out.println("Invalid credentials.");
+        }
+    }
+
+    private void displayManagerMenu() {
+        while (true) {
+            System.out.println("\n--- Manager Menu ---");
+            System.out.println("1. Add Library Employee");
+            System.out.println("2. Change Manager Password");
+            System.out.println("3. Logout");
+            System.out.print("Enter your choice: ");
+            int choice = getIntInput(1, 3);
+            switch (choice) {
+                case 1: handleAddEmployee(); break;
+                case 2: handleChangeManagerPassword(); break;
+                case 3:
+                    managerLoggedIn = false;
+                    System.out.println("Manager logged out.");
+                    return;
+            }
+        }
+    }
+
+    private void handleAddEmployee() {
+        System.out.print("Enter new employee username: ");
+        String username = scanner.nextLine();
+        System.out.print("Enter new employee password: ");
+        String password = scanner.nextLine();
+        librarySystem.getManager().addEmployee(username, password);
+    }
+
+
+    private void handleChangeManagerPassword() {
+        System.out.print("Enter current password: ");
+        String current = scanner.nextLine();
+        if (!librarySystem.getManager().checkPassword(current)) {
+            System.out.println("Wrong password.");
+            return;
+        }
+        System.out.print("Enter new password: ");
+        String newPass = scanner.nextLine();
+        librarySystem.getManager().setPassword(newPass);
+        System.out.println("Password changed.");
+    }
+
 
     private void handleEmployeeLogin() {
         if (employeeLoggedIn) {

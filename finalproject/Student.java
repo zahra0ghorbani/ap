@@ -9,6 +9,7 @@ public class Student {
     private String username;
     private String password;
     private List<BorrowRequest> borrowRequests;
+    private boolean active;
 
     public Student(String name, String studentId, String username, String password) {
         this.name = name;
@@ -16,8 +17,11 @@ public class Student {
         this.username = username;
         this.password = password;
         this.borrowRequests = new ArrayList<>();
+        this.active = true;
     }
 
+    public boolean isActive() {return active;}
+    public void setActive(boolean active) {this.active = active;}
     public String getName() { return name; }
     public String getStudentId() { return studentId; }
     public String getUsername() { return username; }

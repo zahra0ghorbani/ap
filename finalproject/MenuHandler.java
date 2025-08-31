@@ -122,7 +122,8 @@ public class MenuHandler {
             System.out.println("7. Approve/Deny Borrow Request");
             System.out.println("8. Change Employee Password");
             System.out.println("9. View Total Borrow Count");
-            System.out.println("10. Logout");
+            System.out.println("10. Activate/Deactivate Student");
+            System.out.println("11. Logout");
             System.out.print("Please enter your choice: ");
             int choice = getIntInput(1, 9);
             switch (choice) {
@@ -135,10 +136,26 @@ public class MenuHandler {
                 case 7: handleApproveDenyBorrowRequest(); break;
                 case 8: handleChangeEmployeePassword(); break;
                 case 9: displayTotalBorrowCount(); break;
-                case 10: employeeLoggedIn = false; System.out.println("Employee logged out."); return;
+                case 10: handleToggleStudentStatus(); break;
+                case 11: employeeLoggedIn = false; System.out.println("Employee logged out."); return;
             }
         }
     }
+    private void handleToggleStudentStatus() {
+        System.out.print("Enter student's username: ");
+        String username = scanner.nextLine();
+        Student target = librarySystem.getStudentManager().getStudents().stream()
+                .filter(s -> s.getUsername().equals(username))
+                .findFirst()
+                .orElse(null);
+        if (target == null) {
+            System.out.println("Student not found.");
+            return;
+        }
+        target.setActive(!target.isActive());
+        System.out.println("Student " + target.getName() + " is now " + (target.isActive() ? "Active" : "Inactive"));
+    }
+
 
 
 
@@ -269,21 +286,28 @@ public class MenuHandler {
         String password = scanner.nextLine();
         librarySystem.registerStudent(name, studentId, username, password);
     }
-
     private void handleStudentLogin() {
         System.out.println("\n--- Student Login ---");
         System.out.print("Username: ");
         String username = scanner.nextLine();
         System.out.print("Password: ");
         String password = scanner.nextLine();
+
         currentUser = librarySystem.authenticateStudent(username, password);
+
         if (currentUser != null) {
+            if (!currentUser.isActive()) {
+                System.out.println("Your account is deactivated. Contact library employee.");
+                currentUser = null;
+                return;
+            }
             System.out.println("Login successful! Welcome, " + currentUser.getName());
             displayLoggedInStudentMenu();
         } else {
             System.out.println("Invalid username or password.");
         }
     }
+
 
     private void displayLoggedInStudentMenu() {
         while (currentUser != null) {

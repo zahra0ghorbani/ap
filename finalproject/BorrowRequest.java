@@ -8,7 +8,7 @@ public class BorrowRequest {
     private LocalDate startDate;
     private LocalDate endDate;
     private boolean approved;
-    private boolean returned; // ✅ جدید
+    private boolean returned;
 
     public BorrowRequest(Student student, Book book, LocalDate startDate, LocalDate endDate) {
         this.student = student;

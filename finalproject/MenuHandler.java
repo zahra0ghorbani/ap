@@ -123,7 +123,8 @@ public class MenuHandler {
             System.out.println("8. Change Employee Password");
             System.out.println("9. View Total Borrow Count");
             System.out.println("10. Activate/Deactivate Student");
-            System.out.println("11. Logout");
+            System.out.println("11. Receive Book from Student");
+            System.out.println("12. Logout");
             System.out.print("Please enter your choice: ");
             int choice = getIntInput(1, 9);
             switch (choice) {
@@ -137,10 +138,52 @@ public class MenuHandler {
                 case 8: handleChangeEmployeePassword(); break;
                 case 9: displayTotalBorrowCount(); break;
                 case 10: handleToggleStudentStatus(); break;
-                case 11: employeeLoggedIn = false; System.out.println("Employee logged out."); return;
+                case 11: handleReceiveBookFromStudent(); break;
+                case 12: employeeLoggedIn = false; System.out.println("Employee logged out."); return;
             }
         }
     }
+
+    private void handleReceiveBookFromStudent() {
+        System.out.print("Enter student's username: ");
+        String username = scanner.nextLine();
+
+        Student target = librarySystem.getStudentManager().getStudents().stream()
+                .filter(s -> s.getUsername().equals(username))
+                .findFirst()
+                .orElse(null);
+
+        if (target == null) {
+            System.out.println("Student not found.");
+            return;
+        }
+
+        List<BorrowRequest> borrowedBooks = new ArrayList<>();
+        for (BorrowRequest req : target.getBorrowRequests()) {
+            if (!req.isReturned() && req.isApproved()) {
+                borrowedBooks.add(req);
+            }
+        }
+
+        if (borrowedBooks.isEmpty()) {
+            System.out.println("This student has no borrowed books to return.");
+            return;
+        }
+
+        System.out.println("\n--- Borrowed Books by " + target.getName() + " ---");
+        for (int i = 0; i < borrowedBooks.size(); i++) {
+            BorrowRequest req = borrowedBooks.get(i);
+            System.out.println((i + 1) + ". " + req.getBook().getTitle() + " | From: " + req.getStartDate() + " To: " + req.getEndDate());
+        }
+
+        System.out.print("Enter the number of the book to receive (0 to cancel): ");
+        int choice = getIntInput(0, borrowedBooks.size());
+        if (choice == 0) return;
+
+        BorrowRequest selectedRequest = borrowedBooks.get(choice - 1);
+        librarySystem.returnBook(target, selectedRequest.getBook());
+    }
+
     private void handleToggleStudentStatus() {
         System.out.print("Enter student's username: ");
         String username = scanner.nextLine();

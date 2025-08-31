@@ -118,10 +118,11 @@ public class MenuHandler {
             System.out.println("3. Register New Book With Details");
             System.out.println("4. Search Book");
             System.out.println("5. Edit Book Information");
-            System.out.println("6. View All Borrow Requests");
+            System.out.println("6. View Borrow History of a Student");
             System.out.println("7. Approve/Deny Borrow Request");
             System.out.println("8. Change Employee Password");
-            System.out.println("9. Logout");
+            System.out.println("9. View Total Borrow Count");
+            System.out.println("10. Logout");
             System.out.print("Please enter your choice: ");
             int choice = getIntInput(1, 9);
             switch (choice) {
@@ -130,12 +131,47 @@ public class MenuHandler {
                 case 3: handleRegisterBookDetails(); break;
                 case 4: handleEmployeeBookSearch(); break;
                 case 5: handleEditBookInformation(); break;
-                case 6: System.out.println("Feature not implemented yet: View All Borrow Requests"); break;
+                case 6: handleStudentBorrowHistory(); break;
                 case 7: handleApproveDenyBorrowRequest(); break;
                 case 8: handleChangeEmployeePassword(); break;
-                case 9: employeeLoggedIn = false; System.out.println("Employee logged out."); return;
+                case 9: displayTotalBorrowCount(); break;
+                case 10: employeeLoggedIn = false; System.out.println("Employee logged out."); return;
             }
         }
+    }
+
+
+
+
+
+    private void handleStudentBorrowHistory() {
+        System.out.print("Enter student's username: ");
+        String username = scanner.nextLine();
+
+        Student target = librarySystem.getStudentManager().getStudents().stream()
+                .filter(s -> s.getUsername().equals(username))
+                .findFirst()
+                .orElse(null);
+
+        if (target == null) {
+            System.out.println("Student not found.");
+            return;
+        }
+
+        if (target.getBorrowRequests().isEmpty()) {
+            System.out.println("No borrow history for this student.");
+            return;
+        }
+
+        System.out.println("\n--- Borrow History of " + target.getName() + " ---");
+        for (BorrowRequest req : target.getBorrowRequests()) {
+            System.out.println(req);
+        }
+    }
+
+    private void displayTotalBorrowCount() {
+        List<BorrowRequest> requests = librarySystem.getAllBorrowRequests();
+        System.out.println("\nTotal Borrow Requests: " + requests.size());
     }
     private void handleApproveDenyBorrowRequest() {
         System.out.println("\n--- Borrow Requests ---");
@@ -402,5 +438,17 @@ public class MenuHandler {
         String newPassword = scanner.nextLine();
         librarySystem.getEmployee().setPassword(newPassword);
         System.out.println("Password changed successfully.");
+    }
+
+    private void displayAllBorrowRequests() {
+        List<BorrowRequest> requests = librarySystem.getAllBorrowRequests();
+        if (requests.isEmpty()) {
+            System.out.println("No borrow requests found.");
+            return;
+        }
+        System.out.println("\n--- All Borrow Requests ---");
+        for (BorrowRequest req : requests) {
+            System.out.println(req);
+        }
     }
 }

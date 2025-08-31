@@ -1,6 +1,7 @@
 package ap.projects.finalproject;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class LibrarySystem {
@@ -43,8 +44,14 @@ public class LibrarySystem {
     }
 
     public void returnBook(Student student, Book book) {
-        book.setAvailable(true);
-        System.out.println("Book returned successfully: " + book.getTitle());
+        for (BorrowRequest req : student.getBorrowRequests()) {
+            if (req.getBook().equals(book) && !req.isReturned()) {
+                req.markReturned();
+                System.out.println("Book returned successfully: " + book.getTitle());
+                return;
+            }
+        }
+        System.out.println("No active borrow request found for this book.");
     }
 
     public List<Student> getAllStudents() {
@@ -74,5 +81,13 @@ public class LibrarySystem {
 
     public StudentManager getStudentManager() {
         return studentManager;
+    }
+
+    public List<BorrowRequest> getAllBorrowRequests() {
+        List<BorrowRequest> allRequests = new ArrayList<>();
+        for (Student s : studentManager.getStudents()) {
+            allRequests.addAll(s.getBorrowRequests());
+        }
+        return allRequests;
     }
 }

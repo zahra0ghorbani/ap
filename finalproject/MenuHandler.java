@@ -119,19 +119,35 @@ public class MenuHandler {
             System.out.println("\n--- Manager Menu ---");
             System.out.println("1. Add Library Employee");
             System.out.println("2. Change Manager Password");
-            System.out.println("2. View Employee Performance");
-            System.out.println("3. Logout");
+            System.out.println("3. View Employee Performance");
+            System.out.println("4. View Book Statistics");
+            System.out.println("5. Logout");
             System.out.print("Enter your choice: ");
             int choice = getIntInput(1, 3);
             switch (choice) {
                 case 1: handleAddEmployee(); break;
                 case 2: handleChangeManagerPassword(); break;
                 case 3: displayEmployeePerformance();break;
-                case 4:
+                case 4: displayBookStatistics(); break;
+                case 5:
                     managerLoggedIn = false;
                     System.out.println("Manager logged out.");
                     return;
             }
+        }
+    }
+    private void displayBookStatistics() {
+        List<Book> books = librarySystem.getBookManager().getBooks();
+        if (books.isEmpty()) {
+            System.out.println("No books found.");
+            return;
+        }
+        System.out.println("\n--- Book Statistics ---");
+        for (Book book : books) {
+            System.out.println("Title: " + book.getTitle());
+            System.out.println("Total Requests: " + book.getTotalRequests());
+            System.out.println("Total Borrows: " + book.getTotalBorrows());
+            System.out.println("----------------------");
         }
     }
 

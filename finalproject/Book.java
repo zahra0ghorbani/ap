@@ -5,12 +5,33 @@ public class Book {
     private String author;
     private int year;
     private boolean available;
+    private int totalRequests;
+    private int totalBorrows;
+
 
     public Book(String title, String author, int year) {
         this.title = title;
         this.author = author;
         this.year = year;
         this.available = true;
+        this.totalRequests = 0;
+        this.totalBorrows = 0;
+    }
+
+    public void incrementRequests() {
+        totalRequests++;
+    }
+
+    public void incrementBorrows() {
+        totalBorrows++;
+    }
+
+    public int getTotalRequests() {
+        return totalRequests;
+    }
+
+    public int getTotalBorrows() {
+        return totalBorrows;
     }
 
     public String getTitle() {

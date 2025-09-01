@@ -17,6 +17,7 @@ public class BorrowRequest {
         this.endDate = endDate;
         this.approved = false;
         this.returned = false;
+        this.book.incrementRequests();
     }
 
     public Student getStudent() { return student; }
@@ -29,6 +30,7 @@ public class BorrowRequest {
     public void approve() {
         this.approved = true;
         this.book.setAvailable(false);
+        this.book.incrementBorrows();
     }
 
     public void markReturned() {

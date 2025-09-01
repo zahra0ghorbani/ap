@@ -1,10 +1,11 @@
 package ap.projects.finalproject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BookManager {
+public class BookManager implements Serializable {
     private List<Book> books;
 
     public BookManager() {

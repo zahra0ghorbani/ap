@@ -1,6 +1,7 @@
 package ap.projects.finalproject;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -27,7 +28,7 @@ public class MenuHandler {
             System.out.println("4. Manager Menu");
             System.out.println("5. Exit");
             System.out.print("Please enter your choice: ");
-            int choice = getIntInput(1, 4);
+            int choice = getIntInput(1, 5);
             switch (choice) {
                 case 1: displayStudentMainMenu(); break;
                 case 2: displayGuestMenu(); break;
@@ -121,19 +122,59 @@ public class MenuHandler {
             System.out.println("2. Change Manager Password");
             System.out.println("3. View Employee Performance");
             System.out.println("4. View Book Statistics");
-            System.out.println("5. Logout");
+            System.out.println("5. View Borrow History of a Student");
+            System.out.println("6. View Total Borrow Count");
+            System.out.println("7. View Top 10 Students with Most Delay");
+            System.out.println("8. Logout");
             System.out.print("Enter your choice: ");
-            int choice = getIntInput(1, 3);
+            int choice = getIntInput(1, 8);
             switch (choice) {
                 case 1: handleAddEmployee(); break;
                 case 2: handleChangeManagerPassword(); break;
                 case 3: displayEmployeePerformance();break;
                 case 4: displayBookStatistics(); break;
-                case 5:
+                case 5: handleStudentBorrowHistory(); break;
+                case 6: displayTotalBorrowCount(); break;
+                case 7: displayTop10DelayedStudents(); break;
+                case 8:
                     managerLoggedIn = false;
                     System.out.println("Manager logged out.");
                     return;
             }
+        }
+    }
+
+    private void displayTop10DelayedStudents() {
+        List<Student> students = librarySystem.getStudentManager().getStudents();
+        List<StudentDelay> delays = new ArrayList<>();
+
+        LocalDate today = LocalDate.now();
+
+        for (Student s : students) {
+            int totalDelayDays = 0;
+            for (BorrowRequest req : s.getBorrowRequests()) {
+                if (req.isApproved() && !req.isReturned() && req.getEndDate().isBefore(today)) {
+                    totalDelayDays += ChronoUnit.DAYS.between(req.getEndDate(), today);
+                }
+            }
+            if (totalDelayDays > 0) {
+                delays.add(new StudentDelay(s, totalDelayDays));
+            }
+        }
+
+        if (delays.isEmpty()) {
+            System.out.println("No students with delayed book returns.");
+            return;
+        }
+
+        delays.sort((a, b) -> Integer.compare(b.getDelayDays(), a.getDelayDays()));
+
+        System.out.println("\n--- Top 10 Students with Most Delays ---");
+        for (int i = 0; i < Math.min(10, delays.size()); i++) {
+            StudentDelay sd = delays.get(i);
+            System.out.println((i + 1) + ". " + sd.getStudent().getName() +
+                    " | Username: " + sd.getStudent().getUsername() +
+                    " | Delay Days: " + sd.getDelayDays());
         }
     }
     private void displayBookStatistics() {
@@ -201,7 +242,10 @@ public class MenuHandler {
         String username = scanner.nextLine();
         System.out.print("Password: ");
         String password = scanner.nextLine();
-        Employee emp = librarySystem.getEmployee();
+        Employee emp = librarySystem.getManager().getEmployees().stream()
+                .filter(e -> e.getUsername().equals(username))
+                .findFirst()
+                .orElse(null);
         if (emp.getUsername().equals(username) && emp.checkPassword(password)) {
             System.out.println("Employee login successful.");
             employeeLoggedIn = true;
@@ -227,7 +271,7 @@ public class MenuHandler {
             System.out.println("11. Receive Book from Student");
             System.out.println("12. Logout");
             System.out.print("Please enter your choice: ");
-            int choice = getIntInput(1, 9);
+            int choice = getIntInput(1, 12);
             switch (choice) {
                 case 1: handleAddBook(); break;
                 case 2: System.out.println("Feature not implemented yet: Remove Book"); break;

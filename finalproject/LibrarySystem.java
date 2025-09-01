@@ -1,10 +1,11 @@
 package ap.projects.finalproject;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LibrarySystem {
+public class LibrarySystem implements Serializable {
     private StudentManager studentManager;
     private BookManager bookManager;
     private MenuHandler menuHandler;
@@ -42,7 +43,7 @@ public class LibrarySystem {
     }
 
     public void editStudentInformation(Student student) {
-        System.out.println("Not implemented yet.");
+        System.out.println("There is no need for now.");
     }
 
     public void borrowBook(Student student, Book book, LocalDate startDate, LocalDate endDate) {
@@ -78,13 +79,13 @@ public class LibrarySystem {
         return employee;
     }
 
-    public void start() {
-        menuHandler.displayMainMenu();
-    }
-
     public static void main(String[] args) {
-        LibrarySystem system = new LibrarySystem();
-        system.start();
+        LibrarySystem system = DataStorage.loadData();
+        MenuHandler menu = new MenuHandler(system);
+        menu.displayMainMenu();
+
+        DataStorage.saveData(system);
+
     }
 
     public StudentManager getStudentManager() {

@@ -1,9 +1,10 @@
 package ap.projects.finalproject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Student {
+public class Student implements Serializable {
     private String name;
     private String studentId;
     private String username;

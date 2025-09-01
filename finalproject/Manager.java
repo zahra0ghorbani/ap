@@ -1,9 +1,10 @@
 package ap.projects.finalproject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Manager {
+public class Manager implements Serializable {
     private String username;
     private String password;
     private List<Employee> employees;

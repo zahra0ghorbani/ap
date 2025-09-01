@@ -1,9 +1,10 @@
 package ap.projects.finalproject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StudentManager {
+public class StudentManager implements Serializable {
     private List<Student> students;
 
     public StudentManager() {
